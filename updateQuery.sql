@@ -8,6 +8,7 @@ SELECT AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] WHERE [Lab] = [PHL];
 -- avgAgeUNION:
 SELECT AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] WHERE [Lab] = [UNION];
 
+/*specify results by lab*/
 -- eidTestResultNHL:
 SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [Lab] = [NHL] GROUP BY [FinalReportResult];
 

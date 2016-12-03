@@ -28,8 +28,8 @@ SELECT [Lab], AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] GROUP BY [lab
 -- avgAgePerFacilityName
 SELECT [FacilityName],AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] GROUP BY [FacilityName];
 
--- avgAgePerFacilityType
-SELECT [FacilityTyp],AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] GROUP BY [FacilityTyp];
+-- avgAgePerFacilityTypee
+SELECT [FacilityType],AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] GROUP BY [FacilityType];
 
 
 
@@ -51,33 +51,33 @@ SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSumme
 
 /*specify result by facility type*/
 -- eidTestResultAIDST:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [AIDS/STD Team] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [AIDS/STD Team] GROUP BY [FinalReportResult];
 
 -- eidTestResultAMI:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [AMI] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [AMI] GROUP BY [FinalReportResult];
 
 -- eidTestResultDisH:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [District Hospital] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [District Hospital] GROUP BY [FinalReportResult];
 
 -- eidTestResultGenH:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [General Hospital] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [General Hospital] GROUP BY [FinalReportResult];
 
 -- eidTestResultMSFH:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [MSF-H] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [MSF-H] GROUP BY [FinalReportResult];
 
 
 -- eidTestResultNHL:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [National Health Laboratory] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [National Health Laboratory] GROUP BY [FinalReportResult];
 
 
 -- eidTestResultSpH:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [Specialist Hospital] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [Specialist Hospital] GROUP BY [FinalReportResult];
 
 -- eidTestResultSRH:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [State/Regional Hospital] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [State/Regional Hospital] GROUP BY [FinalReportResult];
 
 -- eidTestResultTH:
-SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [Township Hospital] GROUP BY [FinalReportResult];
+SELECT [FinalReportResult], COUNT([ID]) AS [NumberOfResults]FROM [dbo].[EIDSummery] WHERE [FacilityType] = [Township Hospital] GROUP BY [FinalReportResult];
 
 
 /*Laboratory Turnaround Time (TAT) for facilities and laboratories
@@ -105,31 +105,31 @@ SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIF
 
 /*specify tat by facility type*/
 -- avgTatAIDST:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [AIDS/STD Team];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [AIDS/STD Team];
 
 -- avgTatAMI:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [AMI];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [AMI];
 
 -- avgTatDisH:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [District Hospital];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [District Hospital];
 
 -- avgTatGenH:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [General Hospital];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [General Hospital];
 
 -- avgTatMSFH:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [MSF-H];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [MSF-H];
 
 -- avgTatNHL:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [National Health Laboratory];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [National Health Laboratory];
 
 -- avgTatSpH:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [Specialist Hospital];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [Specialist Hospital];
 
 -- avgTatSRH:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [State/Regional Hospital];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [State/Regional Hospital];
 
 -- avgTatTH:
-SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityTyp] = [Township Hospital];
+SELECT AVG(DATEDIFF(day,[SampleCollectedDate],[SampleShipmentDate])),AVG(DATEDIFF(day,[SampleShipmentDate],[RecievedDate])),AVG(DATEDIFF(day,[RecievedDate],[RegistrationDate])),AVG(DATEDIFF(day,[RegistrationDate],[FinalReportDate])),AVG(DATEDIFF(day,[FinalReportDate],[DispachedDate])) FROM [dbo].[EIDSummery] WHERE [FacilityType] = [Township Hospital];
 
 
 /*Track each sample

@@ -1,84 +1,97 @@
-'use strict';
-var svg = d3.select("svg"),
-    margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// 'use strict';
 
-var x = d3.scaleBand()
-    .rangeRound([0, width])
-    .padding(0.1)
-    .align(0.1);
+var data = [
+{label:'Total TAT', value:27},
+{label:'collect - ship', value:5},
+{label:'ship - receive', value:8},
+{label:'receive - register', value:1},
+{label:'register - report', value:3},
+{label:'report - dispatch', value:10}
+];
 
-var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
 
-var z = d3.scaleOrdinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+var div = d3.select('body').append('div').attr('class', 'toolTip');
 
-var stack = d3.stack();
+var axisMargin = 20,
+    margin = 40,
+    valueMargin = 4,
+    width = parseInt(d3.select('body').style('width'), 10), //parseInt() turns strings into numbers, reading up to and ignoring the first non-integer character, and also possibly performing base conversion
+    height = parseInt(d3.select('body').style('height'), 10),
+    barHeight = (height-axisMargin-margin*2)* 0.4/data.length,
+    barPadding = (height-axisMargin-margin*2)*0.3/data.length,
+    data, bar, svg, scale, xAxis, labelWidth = 0;
 
-d3.csv("data.csv", type, function(error, data) {
-  if (error) throw error;
+var max = d3.max(data, function(d) { return d.value; });
 
-  data.sort(function(a, b) { return b.total - a.total; });
+svg = d3.select('body')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
 
-  x.domain(data.map(function(d) { return d.State; }));
-  y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
-  z.domain(data.columns.slice(1));
 
-  g.selectAll(".serie")
-    .data(stack.keys(data.columns.slice(1))(data))
-    .enter().append("g")
-      .attr("class", "serie")
-      .attr("fill", function(d) { return z(d.key); })
-    .selectAll("rect")
-    .data(function(d) { return d; })
-    .enter().append("rect")
-      .attr("x", function(d) { return x(d.data.State); })
-      .attr("y", function(d) { return y(d[1]); })
-      .attr("height", function(d) { return y(d[0]) - y(d[1]); })
-      .attr("width", x.bandwidth());
+bar = svg.selectAll('g') //data join
+              .data(data)
+              .enter()
+              .append('g');
 
-  g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+bar.attr('class', 'bar')
+    .attr('cx',0)
+    .attr('transform', function(d, i) {
+      return 'translate(' + margin + ',' + (i * (barHeight + barPadding) + barPadding) + ')';
+    });
 
-  g.append("g")
-      .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y).ticks(10, "s"))
-    .append("text")
-      .attr("x", 2)
-      .attr("y", y(y.ticks(10).pop()))
-      .attr("dy", "0.35em")
-      .attr("text-anchor", "start")
-      .attr("fill", "#000")
-      .text("Population");
+bar.append('text') //bar label
+    .attr('class', 'label')
+    .attr('y', barHeight / 2)
+    .attr('dy', '.35em') //vertical align middle
+    .text(function(d){
+      return d.label;
+    }).each(function() {
+      labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
+    });
 
-  var legend = g.selectAll(".legend")
-    .data(data.columns.slice(1).reverse())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })
-      .style("font", "10px sans-serif");
+scale = d3.scale.linear() //axis scaling
+                .domain([0, max])
+                .range([0, width - margin*2 - labelWidth]);
 
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .attr("fill", z);
+xAxis = d3.svg.axis()
+          .scale(scale)
+          .tickSize(-height + 2*margin + axisMargin)
+          .orient('bottom');
 
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .attr("text-anchor", "end")
-      .text(function(d) { return d; });
+bar.append('rect') //each bar
+    .attr('transform', 'translate('+labelWidth+', 0)')
+    .attr('height', barHeight)
+    .attr('width', function(d){
+      return scale(d.value);
+    });
+
+bar.append('text') //value annotation of each bar
+    .attr('class', 'value')
+    .attr('y', barHeight / 2)
+    .attr('dx', -valueMargin + labelWidth) //margin right
+    .attr('dy', '.35em') //vertical align middle
+    .attr('text-anchor', 'end')
+    .text(function(d){
+      return (d.value);
+    })
+    .attr('x', function(d){
+      var width = this.getBBox().width;
+      return Math.max(width + valueMargin, scale(d.value));
+    });
+
+bar.on('mousemove', function(d){ //hover to show tooltips
+  div.style('left', d3.event.pageX+10+'px');
+  div.style('top', d3.event.pageY-25+'px');
+  div.style('display', 'inline-block');
+  div.html((d.label)+'<br>'+(d.value)+' Days'); //content to display
 });
 
-function type(d, i, columns) {
-  for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
-  d.total = t;
-  return d;
-}
+bar.on('mouseout', function(d){
+  div.style('display', 'none');
+});
+
+svg.insert('g',':first-child')
+    .attr('class', 'axisHorizontal')
+    .attr('transform', 'translate(' + (margin + labelWidth) + ','+ (height - axisMargin - margin)+')')
+    .call(xAxis);
