@@ -10,20 +10,20 @@ var data = [
 ];
 
 
-var div = d3.select('body').append('div').attr('class', 'toolTip');
+var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
 
 var axisMargin = 20,
     margin = 40,
-    valueMargin = 4,
-    width = parseInt(d3.select('body').style('width'), 10), //parseInt() turns strings into numbers, reading up to and ignoring the first non-integer character, and also possibly performing base conversion
-    height = parseInt(d3.select('body').style('height'), 10),
+    valueMargin = 5,
+    width = parseInt(d3.select('#viz-avg-tat').style('width'), 10), //parseInt() turns strings into numbers, reading up to and ignoring the first non-integer character, and also possibly performing base conversion
+    height = parseInt(d3.select('#viz-avg-tat').style('height'), 10),
     barHeight = (height-axisMargin-margin*2)* 0.4/data.length,
-    barPadding = (height-axisMargin-margin*2)*0.3/data.length,
+    barPadding = (height-axisMargin-margin*2)*0.6/data.length,
     data, bar, svg, scale, xAxis, labelWidth = 0;
 
 var max = d3.max(data, function(d) { return d.value; });
 
-svg = d3.select('body')
+svg = d3.select('#viz-avg-tat')
             .append('svg')
             .attr('width', width)
             .attr('height', height);

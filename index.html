@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="lib/bootstrap.min.css">  <!--bootstrap for styling-->
     <style>
 
-    body {
+    #viz-avg-tat {
         font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         width: 960px;
         height: 500px;
@@ -63,9 +63,7 @@
 </head>
 
 <body class="container"> <!-- content -->
-    <script src="lib/jquery-2.2.3.js"></script> <!--jQuery-->
-    <script src="lib/d3.js"></script> <!--d3-->
-    <script src="visualization.js"></script> <!--my script-->
+
 
     <ul class="nav nav-pills">
         <li role="presentation" class="active"><a href="index.html">Summary</a></li>
@@ -74,11 +72,30 @@
     </ul>
 
     <h1>Lab Summary</h1>
-    <div id ="viz-avg-tat">
-        <!-- viz goes here -->
-    </div>
+    <main>
+        <div class="panel panel-default">
+            <div class="panel-heading">EID Results</div>
+            <div class = "canvas" id ="viz-eid-result">
+            <!-- viz goes here -->
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Average Turnaround Time</div>
+            <div class = "canvas" id ="viz-avg-tat">
+            <!-- viz goes here -->
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Average Age</div>
+            <div class = "canvas" id ="viz-avg-age">
+            <!-- viz goes here -->
+            </div>
+        </div>
+    </main>
 
-
+    <script src="lib/jquery-2.2.3.js"></script> <!--jQuery-->
+    <script src="lib/d3.js"></script> <!--d3-->
+    <script src="visualization.js"></script> <!--my script-->
 
 </body>
 </html>
