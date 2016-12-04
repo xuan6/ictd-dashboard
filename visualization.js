@@ -2,11 +2,11 @@
 
 var data = [
 {label:'Total TAT', value:27},
-{label:'collect - ship', value:5},
-{label:'ship - receive', value:8},
-{label:'receive - register', value:1},
-{label:'register - report', value:3},
-{label:'report - dispatch', value:10}
+{label:'Collect - Ship', value:5},
+{label:'Ship - Receive', value:8},
+{label:'Receive - Register', value:1},
+{label:'Register - Report', value:3},
+{label:'Report - Dispatch', value:10}
 ];
 
 
@@ -81,8 +81,8 @@ bar.append('text') //value annotation of each bar
     });
 
 bar.on('mousemove', function(d){ //hover to show tooltips
-  div.style('left', d3.event.pageX+10+'px');
-  div.style('top', d3.event.pageY-25+'px');
+  div.style('left', (d3.event.pageX-50)+'px');
+  div.style('top', (d3.event.pageY-200)+'px');
   div.style('display', 'inline-block');
   div.html((d.label)+'<br>'+(d.value)+' Days'); //content to display
 });
