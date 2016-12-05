@@ -59,7 +59,8 @@ bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a sp
 
 //label可以最后画，反正是固定的axis label
 
-
+// d3.select('rect')
+//   .style('fill','#d7dfe5');
 
 d3.select('.bargroup')
     .selectAll('rect')
@@ -67,27 +68,15 @@ d3.select('.bargroup')
     .enter()
     .insert('text')
     .attr('transform', function(d, i) {
-                return 'translate(' + -labelWidth + ',' + (i * (barHeight*data.length + barPadding)+barPadding*0.5) + ')';
+                return 'translate(' + -labelWidth + ',' + (i * (barHeight*data.length + barPadding)+margin*1.2) + ')';
     })
-    .attr('y', barHeight / 2)
+    .attr('y', barHeight/2)
     .attr('dy', '.35em')
     .text(function(d){
       return d;
     })
     .attr('labelWidth', labelWidth);
 
-
-
-// bars.append('text') //bar label
-//     .attr('class', 'label')
-//     .attr('y', barHeight / 2)
-//     .attr('dy', '.35em') //vertical align middle
-//     .text(function(d){
-//       return d.label;
-//     }).each(function() {
-//       labelWidth = Math.ceil(Math.max(labelWidth, this.getBBox().width));
-//       renderbar();
-//     });
 
 scale = d3.scale.linear() //axis scaling
                 .domain([0, max()])
@@ -101,11 +90,12 @@ xAxis = d3.svg.axis()
 
 var t = 0;
 function renderbar(){
-  var color = ['#5ab1f4','#d7dfe5','#45c677'];
   var colorPicker = function(t){
+    var color = ['#5ab1f4','#d7dfe5','#45c677'];
     return color[t];
   }
   while (t < data.length){
+    console.log(colorPicker(t));
     bars //each bar group, append bars
     .selectAll('rect')
     .data(function(d){return d.value;})
@@ -113,7 +103,7 @@ function renderbar(){
     .append('rect')
     .attr('class', 'bar')
     .attr('transform', function(d, i) {
-                return 'translate(' + labelWidth + ',' + (i * (barHeight*data.length + barPadding)+barPadding*0.5) + ')';
+                return 'translate(' + (1.5*margin + labelWidth) + ',' + (i * (barHeight*data.length + barPadding)+margin*1.2) + ')';
     })
     .attr('height', barHeight)
     .attr('width', function(d){
@@ -129,7 +119,7 @@ function renderbar(){
     .append('text') //value annotation of each bar
     .attr('class', 'value')
     .attr('transform', function(d, i) {
-                return 'translate(' + margin + ',' + (i * (barHeight + barPadding)+barPadding*0.7)+ ')';
+                return 'translate(' + (1.5*margin + labelWidth) + ',' + (0.5*barPadding+i * (barHeight*data.length + barPadding)+margin*1.2)+ ')';
     })
     // .attr('y', function(i){
     //   return barHeight*(t + 0.5)+(i * (barHeight + barPadding)+barPadding*0.5)
@@ -142,7 +132,7 @@ function renderbar(){
     })
     .attr('x', function(d){
       // var width = this.getBBox().width;
-      return scale(d)-labelWidth;
+      return scale(d)-1.2*labelWidth;
       // return Math.max(width + valueMargin, scale(d));
     });
 
@@ -173,7 +163,7 @@ function renderbar(){
 
 svg.insert('g',':first-child')//chart canvas
     .attr('class', 'axisHorizontal')
-    .attr('transform', 'translate(' + (margin + labelWidth) + ','+ (height+margin)+')')
+    .attr('transform', 'translate(' + (2.5*margin + labelWidth) + ','+ (height+margin)+')')
     .call(xAxis);
 
 renderbar();
