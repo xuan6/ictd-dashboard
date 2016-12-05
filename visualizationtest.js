@@ -58,6 +58,26 @@ bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a sp
     });
 
 //label可以最后画，反正是固定的axis label
+
+
+
+d3.select('.bargroup')
+    .selectAll('rect')
+    .data(tatlabel)
+    .enter()
+    .insert('text')
+    .attr('transform', function(d, i) {
+                return 'translate(' + -labelWidth + ',' + (i * (barHeight*data.length + barPadding)+barPadding*0.5) + ')';
+    })
+    .attr('y', barHeight / 2)
+    .attr('dy', '.35em')
+    .text(function(d){
+      return d;
+    })
+    .attr('labelWidth', labelWidth);
+
+
+
 // bars.append('text') //bar label
 //     .attr('class', 'label')
 //     .attr('y', barHeight / 2)
