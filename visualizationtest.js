@@ -2,32 +2,26 @@
 var color = d3.scale.ordinal()
     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-var label = [
-{'label':'Total TAT', value:[20,27,25]},
-{'label':'Collect - Ship', value:[3,5,4]},
-{'label':'Ship - Receive', value:[5,8,7]},
-{'label':'Receive - Register', value:[1,1,2]},
-{'label':'Register - Report', value:[4,3,5]},
-{'label':'Report - Dispatch', value:[7,10,7]}
-];
+var tatlabel = ['Total TAT','Collect - Ship','Ship - Receive','Receive - Register','Register - Report','Report - Dispatch']
 
 //每个bar group是entity的group，每个group有6个bar
 
 var data = [
-{'entity':'labA','value':[20,3,5,1,4,7]},
-{'entity':'labB','value':[27,5,8,1,3,10]},
-{'entity':'labC','value':[25,4,7,2,5,7]}
+{'entity':'LabA','value':[20,3,5,1,4,7]},
+{'entity':'LabB','value':[27,5,8,1,3,10]},
+{'entity':'LabC','value':[25,4,7,2,5,7]}
 ]
+
 
 var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
 
 var axisMargin = 5,
     margin = 40,
     valueMargin = 5,
-    width = parseInt(d3.select('#viz-avg-tat').style('width'), 10), //parseInt() turns strings into numbers, reading up to and ignoring the first non-integer character, and also possibly performing base conversion
-    height = parseInt(d3.select('#viz-avg-tat').style('height'), 10),
-    barHeight = (height-axisMargin-margin*2)* 0.15/data.length,
-    barPadding = (height-axisMargin-margin*2)*0.4/data.length,
+    width = 960,
+    barHeight = 20,
+    barPadding = 20,
+    height = 6*(barHeight*data.length+barPadding)+margin*2,
     data, bar, svg, scale, xAxis, labelWidth = 0;
 
 
@@ -59,7 +53,7 @@ bars = svg.selectAll('g') //一共3组图，entity有过少就有多少组图，
 bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a specifc phase
     .attr('cx',0)
     .attr('transform', function(d, i) {
-      return 'translate(' + margin + ',' + i*barHeight + ')';//bar group margin
+      return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
     });
 
 //label可以最后画，反正是固定的axis label
@@ -97,7 +91,7 @@ function renderbar(){
     .append('rect')
     .attr('class', 'bar')
     .attr('transform', function(d, i) {
-                return 'translate(' + margin + ',' + (i * (barHeight + barPadding)+barPadding*0.5) + ')';
+                return 'translate(' + margin + ',' + (i * (barHeight*data.length + barPadding)+barPadding*0.5) + ')';
     })
     .attr('height', barHeight)
     .attr('width', function(d){
