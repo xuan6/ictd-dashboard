@@ -1,6 +1,6 @@
 // 'use strict';
-var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+// var color = d3.scale.ordinal()
+    // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 var tatlabel = ['Total TAT','Collect - Ship','Ship - Receive','Receive - Register','Register - Report','Report - Dispatch']
 
@@ -22,7 +22,8 @@ var axisMargin = 5,
     barHeight = 20,
     barPadding = 20,
     height = 6*(barHeight*data.length+barPadding)+margin*2,
-    data, bar, svg, scale, xAxis, labelWidth = 0;
+    data, bar, svg, scale, xAxis = 0,
+    labelWidth = 20;
 
 
 
@@ -78,12 +79,13 @@ xAxis = d3.svg.axis()
           .orient('bottom');
 
 
-
+var t = 0;
 function renderbar(){
   var color = ['#5ab1f4','#d7dfe5','#45c677'];
-  var t = 0;
+  var colorPicker = function(t){
+    return color[t];
+  }
   while (t < data.length){
-    console.log(color[t]);
     bars //each bar group, append bars
     .selectAll('rect')
     .data(function(d){return d.value;})
@@ -91,13 +93,13 @@ function renderbar(){
     .append('rect')
     .attr('class', 'bar')
     .attr('transform', function(d, i) {
-                return 'translate(' + margin + ',' + (i * (barHeight*data.length + barPadding)+barPadding*0.5) + ')';
+                return 'translate(' + labelWidth + ',' + (i * (barHeight*data.length + barPadding)+barPadding*0.5) + ')';
     })
     .attr('height', barHeight)
     .attr('width', function(d){
       return scale(d);//对于data.value来说的d，每个元素就是int
     })
-    .style("fill", color[t])//写function(t)其中的t会变成function(d)一样的作用！
+    .style('fill', colorPicker(t))//写function(t)其中的t会变成function(d)一样的作用！
     .attr('fill-opacity', .9);
 
     bars//for each  bar group
