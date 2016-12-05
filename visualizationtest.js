@@ -85,15 +85,17 @@ xAxis = d3.svg.axis()
 
 
 function renderbar(){
-  var i = 0;
-  while (i < data.length){
+  var t = 0;
+  while (t < data.length){
     bars //each bar group, append bars
     .selectAll('rect')
     .data(function(d){return d.value;})
     .enter()
     .append('rect')
     .attr('class', 'bar')
-    .attr('transform', 'translate('+labelWidth+','+i*barHeight+barHeight*data.length+barPadding+ ')')
+    .attr('transform', function(d, i) {
+                return 'translate(' + margin + ',' + (i * (barHeight + barPadding) + barPadding) + ')';
+    })
     .attr('height', barHeight)
     .attr('width', function(d){
       return scale(d);//对于data.value来说的d，每个元素就是int
@@ -104,7 +106,7 @@ function renderbar(){
     .data(function(d){return d.value;})
     .append('text') //value annotation of each bar
     .attr('class', 'value')
-    .attr('y', barHeight * (i + 0.5)+labelWidth+','+i*barHeight+barHeight*(1+data.length)+data.length*barPadding)
+    .attr('y', barHeight * (i + 0.5)+labelWidth+','+t*barHeight+barHeight*(1+data.length)+data.length*barPadding)
     .attr('dx', -valueMargin + labelWidth) //margin right
     .attr('dy', '.35em') //vertical align middle
     .attr('text-anchor', 'end')
