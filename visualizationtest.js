@@ -1,21 +1,21 @@
 // 'use strict';
-
+var color = ['#5ab1f4','#d7dfe5','#45c677'];
 
 var label = [
-{label:'Total TAT', value:[20,27,25]},
-{label:'Collect - Ship', value:[3,5,4]},
-{label:'Ship - Receive', value:[5,8,7]},
-{label:'Receive - Register', value:[1,1,2]},
-{label:'Register - Report', value:[4,3,5]},
-{label:'Report - Dispatch', value:[7,10,7]}
+{'label':'Total TAT', value:[20,27,25]},
+{'label':'Collect - Ship', value:[3,5,4]},
+{'label':'Ship - Receive', value:[5,8,7]},
+{'label':'Receive - Register', value:[1,1,2]},
+{'label':'Register - Report', value:[4,3,5]},
+{'label':'Report - Dispatch', value:[7,10,7]}
 ];
 
 //每个bar group是entity的group，每个group有6个bar
 
 var data = [
-{entity:'labA',value:[20,3,5,1,4,7]},
-{entity:'labB',value:[27,5,8,1,3,10]},
-{entity:'labC',value:[25,4,7,2,5,7]}
+{'entity':'labA','value':[20,3,5,1,4,7]},
+{'entity':'labB','value':[27,5,8,1,3,10]},
+{'entity':'labC','value':[25,4,7,2,5,7]}
 ]
 
 var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
@@ -25,8 +25,8 @@ var axisMargin = 5,
     valueMargin = 5,
     width = parseInt(d3.select('#viz-avg-tat').style('width'), 10), //parseInt() turns strings into numbers, reading up to and ignoring the first non-integer character, and also possibly performing base conversion
     height = parseInt(d3.select('#viz-avg-tat').style('height'), 10),
-    barHeight = (height-axisMargin-margin*2)* 0.25/data.length,
-    barPadding = (height-axisMargin-margin*2)*0.3/data.length,
+    barHeight = (height-axisMargin-margin*2)* 0.15/data.length,
+    barPadding = (height-axisMargin-margin*2)*0.4/data.length,
     data, bar, svg, scale, xAxis, labelWidth = 0;
 
 
@@ -94,31 +94,42 @@ function renderbar(){
     .append('rect')
     .attr('class', 'bar')
     .attr('transform', function(d, i) {
-                return 'translate(' + margin + ',' + (i * (barHeight + barPadding) + barPadding) + ')';
+                return 'translate(' + margin + ',' + (i * (barHeight + barPadding)+barPadding*0.5) + ')';
     })
     .attr('height', barHeight)
     .attr('width', function(d){
       return scale(d);//对于data.value来说的d，每个元素就是int
-    });
+    })
+    .attr('fill',function(t){
+      return color[t];
+    })
+    .attr('fill-opacity', .9);
 
     bars//for each  bar group
     .selectAll('text')
     .data(function(d){return d.value;})
+    .enter()
     .append('text') //value annotation of each bar
     .attr('class', 'value')
-    .attr('y', barHeight * (i + 0.5)+labelWidth+','+t*barHeight+barHeight*(1+data.length)+data.length*barPadding)
+    .attr('transform', function(d, i) {
+                return 'translate(' + margin + ',' + (i * (barHeight + barPadding)+barPadding*0.7)+ ')';
+    })
+    // .attr('y', function(i){
+    //   return barHeight*(t + 0.5)+(i * (barHeight + barPadding)+barPadding*0.5)
+    // })
     .attr('dx', -valueMargin + labelWidth) //margin right
     .attr('dy', '.35em') //vertical align middle
     .attr('text-anchor', 'end')
     .text(function(d){
-      return (d.value);
+      return d;
     })
     .attr('x', function(d){
-      var width = this.getBBox().width;
-      return Math.max(width + valueMargin, scale(d.value));
+      // var width = this.getBBox().width;
+      return scale(d)-labelWidth;
+      // return Math.max(width + valueMargin, scale(d));
     });
 
-    i += 1; //画下一组entity
+    t += 1; //画下一组entity
   };
 };
 
