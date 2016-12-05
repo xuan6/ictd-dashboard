@@ -1,5 +1,6 @@
 // 'use strict';
-var color = ['#5ab1f4','#d7dfe5','#45c677'];
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
 var label = [
 {'label':'Total TAT', value:[20,27,25]},
@@ -85,8 +86,10 @@ xAxis = d3.svg.axis()
 
 
 function renderbar(){
+  var color = ['#5ab1f4','#d7dfe5','#45c677'];
   var t = 0;
   while (t < data.length){
+    console.log(color[t]);
     bars //each bar group, append bars
     .selectAll('rect')
     .data(function(d){return d.value;})
@@ -100,9 +103,7 @@ function renderbar(){
     .attr('width', function(d){
       return scale(d);//对于data.value来说的d，每个元素就是int
     })
-    .attr('fill',function(t){
-      return color[t];
-    })
+    .style("fill", color[t])//写function(t)其中的t会变成function(d)一样的作用！
     .attr('fill-opacity', .9);
 
     bars//for each  bar group
@@ -135,27 +136,15 @@ function renderbar(){
 
 
 
-// function valBar(d){//for each entity (data array)
-//       var val, index = 0;
-//       var length = 2;//test data length is 2
-//       while (index < length) {
-//         val = d.value[index];
-//         index += 1;
-//         console.log(val);
-//         return val;
-//       }
-// };
-
-
-
 //hover等会儿再画
 
-// d3.selectAll('rect').on('mousemove', function(d){ //hover to show tooltips
-//   div.style('left', (d3.event.pageX-50)+'px');
-//   div.style('top', (d3.event.pageY-200)+'px');
-//   div.style('display', 'inline-block');
-//   div.html((d.label)+'<br>'+(d.value)+' Days'); //content to display
-// });
+bars.selectAll('rect').
+  on('mousemove', function(d){ //hover to show tooltips
+  div.style('left', (d3.event.pageX-50)+'px');
+  div.style('top', (d3.event.pageY-200)+'px');
+  div.style('display', 'inline-block');
+  div.html((d.label)+'<br>'+(d.value)+' Days'); //content to display
+});
 
 
 // d3.selectAll('rect').on('mouseout', function(d){
