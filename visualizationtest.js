@@ -95,7 +95,7 @@ scale = d3.scale.linear() //axis scaling
 
 xAxis = d3.svg.axis()
           .scale(scale)
-          .tickSize(-height + 2*margin + axisMargin)
+          .tickSize(-height + 0.2*margin + axisMargin)
           .orient('bottom');
 
 
@@ -154,13 +154,13 @@ function renderbar(){
 
 //hover等会儿再画
 
-bars.selectAll('rect').
-  on('mousemove', function(d){ //hover to show tooltips
-  div.style('left', (d3.event.pageX-50)+'px');
-  div.style('top', (d3.event.pageY-200)+'px');
-  div.style('display', 'inline-block');
-  div.html((d.label)+'<br>'+(d.value)+' Days'); //content to display
-});
+// bars.selectAll('rect').
+//   on('mousemove', function(d){ //hover to show tooltips
+//   div.style('left', (d3.event.pageX-50)+'px');
+//   div.style('top', (d3.event.pageY-200)+'px');
+//   div.style('display', 'inline-block');
+//   div.html((d.label)+'<br>'+(d.value)+' Days'); //content to display
+// });
 
 
 // d3.selectAll('rect').on('mouseout', function(d){
@@ -173,7 +173,7 @@ bars.selectAll('rect').
 
 svg.insert('g',':first-child')//chart canvas
     .attr('class', 'axisHorizontal')
-    .attr('transform', 'translate(' + (margin + labelWidth) + ','+ (height - axisMargin - margin)+')')
+    .attr('transform', 'translate(' + (margin + labelWidth) + ','+ (height+margin)+')')
     .call(xAxis);
 
 renderbar();
