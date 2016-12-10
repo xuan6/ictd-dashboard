@@ -9,7 +9,9 @@ var tatlabel = ['Total TAT','Collect - Ship','Ship - Receive','Receive - Registe
 var data = [
 {'entity':'LabA','value':[20,3,5,1,4,7]},
 {'entity':'LabB','value':[27,5,8,1,3,10]},
-{'entity':'LabC','value':[25,4,7,2,5,7]}
+{'entity':'LabC','value':[25,4,7,2,5,7]},
+{'entity':'LabC','value':[21,3,9,2,8,4]},
+{'entity':'LabC','value':[25,2,8,2,6,8]}
 ]
 
 
@@ -57,27 +59,6 @@ bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a sp
       return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
     });
 
-//label可以最后画，反正是固定的axis label
-
-// d3.select('rect')
-//   .style('fill','#d7dfe5');
-
-d3.select('.bargroup')
-    .selectAll('rect')
-    .data(tatlabel)
-    .enter()
-    .insert('text')
-    .attr('size', 15)
-    .attr('transform', function(d, i) {
-                return 'translate(' + -0.7*labelWidth + ',' + (i * (barHeight*data.length + barPadding)+margin*1.2) + ')';
-    })
-    .attr('y', barHeight/2)
-    .attr('dy', '.35em')
-    .text(function(d){
-      return d;
-    })
-    .attr('labelWidth', labelWidth);
-
 
 scale = d3.scale.linear() //axis scaling
                 .domain([0, max()])
@@ -97,6 +78,7 @@ function renderbar(){
   }
   while (t < data.length){
     console.log(colorPicker(t));
+
     bars //each bar group, append bars
     .selectAll('rect')
     .data(function(d){return d.value;})
@@ -113,7 +95,7 @@ function renderbar(){
     .style('fill', colorPicker(t))//写function(t)其中的t会变成function(d)一样的作用！
     .attr('fill-opacity', .9);
 
-    bars//for each  bar group
+    bars//for each  bar group, append text of the value
     .selectAll('text')
     .data(function(d){return d.value;})
     .enter()
@@ -122,10 +104,7 @@ function renderbar(){
     .attr('transform', function(d, i) {
                 return 'translate(' + (1.5*margin + labelWidth) + ',' + (0.5*barPadding+i * (barHeight*data.length + barPadding)+margin*1.2)+ ')';
     })
-    // .attr('y', function(i){
-    //   return barHeight*(t + 0.5)+(i * (barHeight + barPadding)+barPadding*0.5)
-    // })
-    .attr('dx', -valueMargin + labelWidth) //margin right
+    .attr('dx', -valueMargin ) //margin right
     .attr('dy', '.35em') //vertical align middle
     .attr('text-anchor', 'end')
     .style('size','20px')
@@ -134,7 +113,7 @@ function renderbar(){
     })
     .attr('x', function(d){
       // var width = this.getBBox().width;
-      return scale(d)-1.2*labelWidth;
+      return scale(d);
       // return Math.max(width + valueMargin, scale(d));
     });
 
@@ -167,5 +146,24 @@ svg.insert('g',':first-child')//chart canvas
     .attr('class', 'axisHorizontal')
     .attr('transform', 'translate(' + (2.5*margin + labelWidth) + ','+ (height+margin)+')')
     .call(xAxis);
+
+//turnaround time vertical labels
+svg.insert('g',':first-child')
+    .attr('class','tatlabels')
+    .selectAll('text')
+    .data(tatlabel)
+    .enter()
+    .append('text')
+    .attr('size', 15)
+    .attr('transform', function(d, i) {
+                return 'translate(' + 0.4*labelWidth + ',' + (i * (barHeight*data.length + barPadding)+margin*1.2) + ')';
+    })
+    .attr('y', barHeight/2)
+    .attr('dy', '.35em')
+    .text(function(d){
+      return d;
+    })
+    .attr('labelWidth', labelWidth);
+
 
 renderbar();
