@@ -16,14 +16,14 @@ var data = [
 var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
 
 var axisMargin = 5,
-    margin = 40,
+    margin = 45,
     valueMargin = 5,
     width = 960,
     barHeight = 20,
     barPadding = 20,
     height = 6*(barHeight*data.length+barPadding)+margin*2,
     data, bar, svg, scale, xAxis = 0,
-    labelWidth = 20;
+    labelWidth = 40;
 
 
 
@@ -67,8 +67,9 @@ d3.select('.bargroup')
     .data(tatlabel)
     .enter()
     .insert('text')
+    .attr('size', 15)
     .attr('transform', function(d, i) {
-                return 'translate(' + -labelWidth + ',' + (i * (barHeight*data.length + barPadding)+margin*1.2) + ')';
+                return 'translate(' + -0.7*labelWidth + ',' + (i * (barHeight*data.length + barPadding)+margin*1.2) + ')';
     })
     .attr('y', barHeight/2)
     .attr('dy', '.35em')
@@ -127,6 +128,7 @@ function renderbar(){
     .attr('dx', -valueMargin + labelWidth) //margin right
     .attr('dy', '.35em') //vertical align middle
     .attr('text-anchor', 'end')
+    .style('size','20px')
     .text(function(d){
       return d;
     })
