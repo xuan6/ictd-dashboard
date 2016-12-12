@@ -14,6 +14,11 @@ var data = [
 {'entity':'LabC','value':[25,2,8,2,6,8]}
 ]
 
+var colors = d3.scale.category20();
+
+// var colors = d3.scale.linear().domain([0,15])
+//         .range(['#e0884a', '#9f49bc']);
+
 
 var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
 
@@ -26,6 +31,7 @@ var axisMargin = 5,
     height = 6*(barHeight*data.length+barPadding)+margin*2,
     data, bar, svg, scale, xAxis = 0,
     labelWidth = 40;
+
 
 
 
@@ -46,18 +52,43 @@ svg = d3.select('#viz-avg-tat')
             .append('svg')
             .attr('width', width)
             .attr('height', height);
+var tatlegend = svg.selectAll('g')
+    .data(data)
+    .enter()
+    .append('div')
 
+tatlegend
+    .attr('class', function(d,i){
+      return 'entity'+i;
+    })
+    .append('text')
+    .text(function(d,i){
+      return d.entity;
+    })
+    .attr('color','red')
+    .attr('transform', function(d, i) {
+          return 'translate(' + (margin + i*labelWidth)+ ',' + margin + ')';//grouped bards margin
+        });
 
 bars = svg.selectAll('g') //一共3组图，entity有过少就有多少组图，每一组图的margin是往下推一个bar height，每个bar之间的margin是barheight和barmargin各种加起来
               .data(data)
               .enter()
               .append('g');
 
-bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a specifc phase
+bars.attr('class', function(d,i){
+    return 'bargroup'+i;
+    })//bar = group of (label + rect + tooltip) for a specifc phase
     .attr('cx',0)
     .attr('transform', function(d, i) {
       return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
     });
+
+
+// bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a specifc phase
+//     .attr('cx',0)
+//     .attr('transform', function(d, i) {
+//       return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
+//     });
 
 
 scale = d3.scale.linear() //axis scaling
@@ -70,14 +101,11 @@ xAxis = d3.svg.axis()
           .orient('bottom');
 
 
-var t = 0;
+
 function renderbar(){
-  var colorPicker = function(t){
-    var color = ['#5ab1f4','#d7dfe5','#45c677'];
-    return color[t];
-  }
-  while (t < data.length){
-    console.log(colorPicker(t));
+  var index = 0;
+  while (index < data.length){
+
 
     bars //each bar group, append bars
     .selectAll('rect')
@@ -90,10 +118,8 @@ function renderbar(){
     })
     .attr('height', barHeight)
     .attr('width', function(d){
-      return scale(d);//对于data.value来说的d，每个元素就是int
-    })
-    .style('fill', colorPicker(t))//写function(t)其中的t会变成function(d)一样的作用！
-    .attr('fill-opacity', .9);
+      return scale(d);})//对于data.value来说的d，每个元素就是int
+    .attr('fill-opacity', .85);
 
     bars//for each  bar group, append text of the value
     .selectAll('text')
@@ -117,7 +143,7 @@ function renderbar(){
       // return Math.max(width + valueMargin, scale(d));
     });
 
-    t += 1; //画下一组entity
+    index += 1; //画下一组entity
   };
 };
 
@@ -141,6 +167,23 @@ function renderbar(){
 // bar2.on('mouseout', function(d){
 //   div.style('display', 'none');
 // });
+
+function fillColor(){
+  var countGroup=data.length;
+  var barGroupIndex = 0;
+  
+  while (barGroupIndex < countGroup) {
+    var barGroupClassName = ('.bargroup'+barGroupIndex);
+    console.log(barGroupClassName);
+    d3.select(barGroupClassName)
+      .selectAll('rect')
+      .attr('fill',colors(barGroupIndex));
+    barGroupIndex += 1;
+
+  }
+} 
+
+
 
 svg.insert('g',':first-child')//chart canvas
     .attr('class', 'axisHorizontal')
@@ -167,3 +210,4 @@ svg.insert('g',':first-child')
 
 
 renderbar();
+fillColor();
