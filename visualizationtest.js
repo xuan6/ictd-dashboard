@@ -53,12 +53,17 @@ tatCanvas = d3.select('#viz-avg-tat')
             .attr('width', width)
             .attr('height', height);
 
-var tatlegend = tatCanvas.selectAll('g')
+var tatLegend = d3.select('#legend-avg-tat')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height/12);
+
+var tatEntityItems = tatLegend.selectAll('g')
     .data(data)
     .enter()
-    .append('div')
+    .append('g')
 
-tatlegend
+tatEntityItems
     .attr('class', function(d,i){
       return 'entity'+i;
     })
@@ -67,8 +72,9 @@ tatlegend
       return d.entity;
     })
     .attr('color','red')
+    .attr('dy','.35em')
     .attr('transform', function(d, i) {
-          return 'translate(' + (margin + i*labelWidth)+ ',' + margin + ')';//grouped bards margin
+          return 'translate(' + (margin + i*2*labelWidth)+ ',' + margin + ')';//grouped bards margin
         });
 
 bars = tatCanvas.selectAll('g') //一共3组图，entity有过少就有多少组图，每一组图的margin是往下推一个bar height，每个bar之间的margin是barheight和barmargin各种加起来
