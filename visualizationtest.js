@@ -29,7 +29,7 @@ var axisMargin = 5,
     barHeight = 20,
     barPadding = 20,
     height = 6*(barHeight*data.length+barPadding)+margin*2,
-    data, bar, svg, scale, xAxis = 0,
+    data, bar, tatCanvas, scale, xAxis = 0,
     labelWidth = 40;
 
 
@@ -48,11 +48,12 @@ var max = function(){ //find the max length of the rects
 };
 
 
-svg = d3.select('#viz-avg-tat')
+tatCanvas = d3.select('#viz-avg-tat')
             .append('svg')
             .attr('width', width)
             .attr('height', height);
-var tatlegend = svg.selectAll('g')
+
+var tatlegend = tatCanvas.selectAll('g')
     .data(data)
     .enter()
     .append('div')
@@ -70,7 +71,7 @@ tatlegend
           return 'translate(' + (margin + i*labelWidth)+ ',' + margin + ')';//grouped bards margin
         });
 
-bars = svg.selectAll('g') //一共3组图，entity有过少就有多少组图，每一组图的margin是往下推一个bar height，每个bar之间的margin是barheight和barmargin各种加起来
+bars = tatCanvas.selectAll('g') //一共3组图，entity有过少就有多少组图，每一组图的margin是往下推一个bar height，每个bar之间的margin是barheight和barmargin各种加起来
               .data(data)
               .enter()
               .append('g');
@@ -185,13 +186,13 @@ function fillColor(){
 
 
 
-svg.insert('g',':first-child')//chart canvas
+tatCanvas.insert('g',':first-child')//chart canvas
     .attr('class', 'axisHorizontal')
     .attr('transform', 'translate(' + (2.5*margin + labelWidth) + ','+ (height+margin)+')')
     .call(xAxis);
 
 //turnaround time vertical labels
-svg.insert('g',':first-child')
+tatCanvas.insert('g',':first-child')
     .attr('class','tatlabels')
     .selectAll('text')
     .data(tatlabel)
