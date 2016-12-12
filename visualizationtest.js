@@ -71,10 +71,23 @@ tatEntityItems
     .text(function(d,i){
       return d.entity;
     })
-    .attr('color','red')
     .attr('dy','.35em')
     .attr('transform', function(d, i) {
           return 'translate(' + (margin + i*2*labelWidth)+ ',' + margin + ')';//grouped bards margin
+        });
+
+tatEntityItems    
+    .append('rect')
+    .attr('fill',function(d,i){
+      return colors(i);
+    })
+    .attr('class', function(d,i){
+      return 'legend'+i;
+    })
+    .attr('height',barHeight)
+    .attr('width',barHeight)
+    .attr('transform', function(d, i) {
+          return 'translate(' + (margin +labelWidth+ i*2*labelWidth)+ ',' + .7*margin + ')';//grouped bards margin
         });
 
 bars = tatCanvas.selectAll('g') //一共3组图，entity有过少就有多少组图，每一组图的margin是往下推一个bar height，每个bar之间的margin是barheight和barmargin各种加起来
