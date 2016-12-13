@@ -108,13 +108,13 @@ ageCanvas//for each  bar group, append text of the value
     .data(age)
     .enter()
     .append('text') //value annotation of each bar
-    .attr('class', 'value')
-    .attr('color','black')
     .attr('transform', function(d, i) {
-                return 'translate('+0+',' + i*barHeight+ ')';
+                return 'translate('+(1.5*margin)+',' + (margin+i*barHeight)+ ')';
     })
+    .attr('class', 'result')
+    .attr('color','black')
     .attr('dx', valueMargin ) //margin right
-    .attr('dy', '.35em') //vertical align middle
+    .attr('dy', '.95em') //vertical align middle
     // .attr('text-anchor', 'end')
     .style('size','20px')
     .text(function(d){
