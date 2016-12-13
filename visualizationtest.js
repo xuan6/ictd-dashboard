@@ -16,8 +16,9 @@ var data = [
 
 var colors = d3.scale.category20();
 
-// var colors = d3.scale.linear().domain([0,15])
-//         .range(['#e0884a', '#9f49bc']);
+var resultColors = d3.scale.ordinal()
+  .domain(['negative', 'indeterminate', 'positive'])
+  .range(['#ff7c6d', '#fff45e', '#98e884']);
 
 
 var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
@@ -46,6 +47,96 @@ var max = function(){ //find the max length of the rects
   });
   return maxData;
 };
+
+//for eid test
+
+
+
+var eidCanvas = d3.select('#viz-eid-result')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height*.7);
+
+
+var w = barHeight*data.length+3*margin;
+var h = 500;
+//Original data
+var dataset = [
+    [//positive
+        { x: 0, y: 5 },
+        { x: 1, y: 4 },
+        { x: 2, y: 2 },
+        { x: 3, y: 7 },
+        { x: 4, y: 23 }
+    ],
+    //ind
+    [
+        { x: 0, y: 10 },
+        { x: 1, y: 12 },
+        { x: 2, y: 19 },
+        { x: 3, y: 23 },
+        { x: 4, y: 17 }
+    ],
+    //negative
+    [
+        { x: 0, y: 22 },
+        { x: 1, y: 28 },
+        { x: 2, y: 32 },
+        { x: 3, y: 35 },
+        { x: 4, y: 43 }
+    ]
+];
+//Set up stack method
+var stack = d3.layout.stack();
+//Data, stacked
+stack(dataset);
+//Set up scales
+var xScale = d3.scale.ordinal()
+    .domain(d3.range(dataset[0].length))
+    .rangeRoundBands([0, w], 0.05);
+var yScale = d3.scale.linear()
+    .domain([0,
+        d3.max(dataset, function(d) {
+            return d3.max(d, function(d) {
+                return d.y0 + d.y;
+            });
+        })
+    ])
+    .range([h,0]);
+//Easy colors accessible via a 10-step ordinal scale
+
+// Add a group for each row of data
+var groups = eidCanvas.selectAll("g")
+    .data(dataset)
+    .enter()
+    .append("g")
+    .attr('transform', function(d, i) {
+          return 'translate(' + margin+ ',' + 2*margin + ')';//grouped bards margin
+        })
+    .style("fill", function(d, i) {
+        return resultColors(i);
+    });
+// Add a rect for each data value
+var rects = groups.selectAll("rect")
+    .data(function(d) { return d; })
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {
+        return xScale(i);
+    })
+    .attr("y", function(d) {
+        return yScale(d.y0) - (h - yScale(d.y));
+    })
+    .attr("height", function(d) {
+        return h - yScale(d.y);;
+    })
+    .attr("width", xScale.rangeBand());
+//eid end
+
+
+
+
+
 
 
 tatCanvas = d3.select('#viz-avg-tat')
