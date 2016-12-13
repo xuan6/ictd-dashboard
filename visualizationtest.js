@@ -10,8 +10,13 @@ var data = [
 {'entity':'LabA','value':[20,3,5,1,4,7]},
 {'entity':'LabB','value':[27,5,8,1,3,10]},
 {'entity':'LabC','value':[25,4,7,2,5,7]},
-{'entity':'LabC','value':[21,3,9,2,8,4]},
-{'entity':'LabC','value':[25,2,8,2,6,8]}
+{'entity':'LabD','value':[21,3,9,2,8,4]},
+{'entity':'LabE','value':[25,2,8,2,6,8]}
+]
+
+
+var age = [
+23,45,33,29,44
 ]
 
 var colors = d3.scale.category20();
@@ -34,10 +39,6 @@ var axisMargin = 5,
     labelWidth = 40;
 
 
-
-
-//var max = d3.max(data, function(d) { return d.value; });
-
 var max = function(){ //find the max length of the rects
   var maxData = 0
   data.forEach(function(i){
@@ -48,22 +49,83 @@ var max = function(){ //find the max length of the rects
   return maxData;
 };
 
+scale = d3.scale.linear() //axis scaling
+                .domain([0, max()])
+                .range([0, width - margin*2 - labelWidth]);
+
+xAxis = d3.svg.axis()
+          .scale(scale)
+          .tickSize(-height + 0.2*margin + axisMargin)
+          .orient('bottom');
+
+
+
+
+//for avg age
+var ageCanvas = d3.select('#viz-avg-age')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', barHeight*data.length+barPadding*4);
+
+var ages = ageCanvas.selectAll('rect')
+              .data(age)
+              .enter()
+              .append('rect');
+
+ages.attr('class', function(d,i){
+    return 'age'+i;
+    })//bar = group of (label + rect + tooltip) for a specifc phase
+    .attr('cx',0)
+    .attr('transform', function(d, i) {
+      return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
+    })
+    .attr('height', barHeight)
+    .attr('width', function(d){
+      return .5*scale(d);})//对于data.value来说的d，每个元素就是int
+    .attr('fill-opacity', .85);
+
+ageCanvas//for each  bar group, append text of the value
+    .insert('g',':first-child')
+    .attr('class','agevalues')
+    .selectAll('text')
+    .data(age)
+    .enter()
+    .append('text') //value annotation of each bar
+    .attr('class', 'value')
+    .style('position','absolute')
+    .style('z-index',2)
+    .attr('transform', function(d, i) {
+                return 'translate('+0+',' + i*barHeight+ ')';
+    })
+    .attr('dx', valueMargin ) //margin right
+    .attr('dy', '.35em') //vertical align middle
+    .attr('text-anchor', 'end')
+    .style('size','20px')
+    .text(function(d){
+      return d;
+    })
+    .attr('x', function(d){
+      // var width = this.getBBox().width;
+      return .5*scale(d)-labelWidth;
+      // return Math.max(width + valueMargin, scale(d));
+    });
+
+
+
+
 //for eid test
-
-
-
 var eidCanvas = d3.select('#viz-eid-result')
             .append('svg')
             .attr('width', width)
-            .attr('height', height*.7);
+            .attr('height', barHeight*data.length+4*margin);
 
 
-var w = barHeight*data.length+3*margin;
-var h = 500;
+var w = width*0.8;
+var h = barHeight*data.length+3*margin;
 //Original data
 var dataset = [
     [//positive
-        { x: 0, y: 5 },
+        { x: 0, y: 5 }, //x for index, y for value
         { x: 1, y: 4 },
         { x: 2, y: 2 },
         { x: 3, y: 7 },
@@ -91,10 +153,10 @@ var stack = d3.layout.stack();
 //Data, stacked
 stack(dataset);
 //Set up scales
-var xScale = d3.scale.ordinal()
+var yScale = d3.scale.ordinal()
     .domain(d3.range(dataset[0].length))
-    .rangeRoundBands([0, w], 0.05);
-var yScale = d3.scale.linear()
+    .rangeRoundBands([0, h], 0.05);
+var xScale = d3.scale.linear()
     .domain([0,
         d3.max(dataset, function(d) {
             return d3.max(d, function(d) {
@@ -102,7 +164,7 @@ var yScale = d3.scale.linear()
             });
         })
     ])
-    .range([h,0]);
+    .range([0,w]);
 //Easy colors accessible via a 10-step ordinal scale
 
 // Add a group for each row of data
@@ -111,7 +173,7 @@ var groups = eidCanvas.selectAll("g")
     .enter()
     .append("g")
     .attr('transform', function(d, i) {
-          return 'translate(' + margin+ ',' + 2*margin + ')';//grouped bards margin
+          return 'translate(' + (1.5*margin + labelWidth)+ ',' + 1.5*margin + ')';//grouped bards margin
         })
     .style("fill", function(d, i) {
         return resultColors(i);
@@ -122,20 +184,46 @@ var rects = groups.selectAll("rect")
     .enter()
     .append("rect")
     .attr("x", function(d, i) {
-        return xScale(i);
+        return xScale(d.y0);
     })
-    .attr("y", function(d) {
-        return yScale(d.y0) - (h - yScale(d.y));
+    .attr("y", function(d,i) {
+        return yScale(i);
     })
-    .attr("height", function(d) {
-        return h - yScale(d.y);;
+    .attr("height", barHeight)
+    .attr("width", function(d){
+      return xScale(d.y);
+    });
+
+var eidValue = groups.selectAll('text')
+    .data(function(d) { return d; })
+    .enter()
+    .append('text')
+    .attr('class','result')
+    .text(function(d) { return d.y; })
+    .attr('x', function(d, i) {
+        return xScale(d.y0)+3;
     })
-    .attr("width", xScale.rangeBand());
+    .attr('y', function(d,i) {
+        return yScale(i)+.8*barHeight;
+    });
+
+eidCanvas.insert('g',':first-child')
+    .attr('class','eidlabels')
+    .selectAll('text')
+    .data(data)
+    .enter()
+    .append('text')
+    .attr('size', 15)
+    .attr('transform', function(d, i) {
+                return 'translate(' + 0.4*labelWidth + ',' + (1.5*margin+yScale(i)) + ')';
+    })
+    .attr('y', barHeight/2)
+    .attr('dy', '.35em')
+    .text(function(d){
+      return d.entity;
+    })
+    .attr('labelWidth', labelWidth);
 //eid end
-
-
-
-
 
 
 
@@ -202,14 +290,7 @@ bars.attr('class', function(d,i){
 //     });
 
 
-scale = d3.scale.linear() //axis scaling
-                .domain([0, max()])
-                .range([0, width - margin*2 - labelWidth]);
 
-xAxis = d3.svg.axis()
-          .scale(scale)
-          .tickSize(-height + 0.2*margin + axisMargin)
-          .orient('bottom');
 
 
 
@@ -283,15 +364,23 @@ function fillColor(){
   var countGroup=data.length;
   var barGroupIndex = 0;
   
-  while (barGroupIndex < countGroup) {
+  while (barGroupIndex < countGroup){
     var barGroupClassName = ('.bargroup'+barGroupIndex);
-    console.log(barGroupClassName);
+    var ageClassName = ('.age'+barGroupIndex);
+    console.log(ageClassName);
     d3.select(barGroupClassName)
       .selectAll('rect')
       .attr('fill',colors(barGroupIndex));
+
+    d3.select(ageClassName)
+      .attr('fill',colors(barGroupIndex));
+
+
     barGroupIndex += 1;
 
   }
+
+ 
 } 
 
 
