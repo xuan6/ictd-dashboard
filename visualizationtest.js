@@ -1,11 +1,10 @@
-// 'use strict';
-// var color = d3.scale.ordinal()
-    // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+/*---------data formart-----------*/
 
 var tatlabel = ['Total TAT','Collect - Ship','Ship - Receive','Receive - Register','Register - Report','Report - Dispatch']
 
-//每个bar group是entity的group，每个group有6个bar
+var eidlegend = ['Positive(Detected)','Indeterminate','Negative(Not Detected)','Rejected']
 
+//tat data should looks like this format
 var data = [
 {'entity':'LabA','value':[20,3,5,1,4,7]},
 {'entity':'LabB','value':[27,5,8,1,3,10]},
@@ -14,19 +13,23 @@ var data = [
 {'entity':'LabE','value':[25,2,8,2,6,8]}
 ]
 
-
+//age data should looks like this format
 var age = [
 23,45,33,29,44
 ]
 
+
+/*-------------set up config---------------*/
+
 var colors = d3.scale.category20();
 
+//edi test result colors
 var resultColors = d3.scale.ordinal()
-  .domain(['negative', 'indeterminate', 'positive'])
-  .range(['#ff7c6d', '#fff45e', '#98e884']);
+  .domain(['negative', 'indeterminate', 'positive','rejected'])
+  .range(['#ff7c6d', '#fff45e', '#98e884','#d7dae0']);
 
 
-var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
+// var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
 
 var axisMargin = 5,
     margin = 45,
@@ -34,7 +37,7 @@ var axisMargin = 5,
     width = 960,
     barHeight = 20,
     barPadding = 20,
-    height = 6*(barHeight*data.length+barPadding)+margin*2,
+    height = 6*(barHeight*data.length+barPadding)+margin*2, //height for tat canvas
     data, bar, tatCanvas, scale, xAxis = 0,
     labelWidth = 40;
 
@@ -49,6 +52,7 @@ var max = function(){ //find the max length of the rects
   return maxData;
 };
 
+
 scale = d3.scale.linear() //axis scaling
                 .domain([0, max()])
                 .range([0, width - margin*2 - labelWidth]);
@@ -61,11 +65,23 @@ xAxis = d3.svg.axis()
 
 
 
-//for avg age
+/*-------------for avg age section ---------------*/
+
+var scaleAge = d3.scale.linear() //axis scaling
+                .domain([0, Math.max(...age)])
+                .range([0, width - margin*2 - labelWidth]);
+var ageHeight = barHeight*data.length+barPadding*4
+
+var xAxisAge = d3.svg.axis()
+          .scale(scaleAge)
+          .tickSize(-ageHeight + 0.2*margin + axisMargin)
+          .orient('bottom');
+
 var ageCanvas = d3.select('#viz-avg-age')
             .append('svg')
             .attr('width', width)
-            .attr('height', barHeight*data.length+barPadding*4);
+            .attr('height', ageHeight);
+            
 
 var ages = ageCanvas.selectAll('rect')
               .data(age)
@@ -74,16 +90,17 @@ var ages = ageCanvas.selectAll('rect')
 
 ages.attr('class', function(d,i){
     return 'age'+i;
-    })//bar = group of (label + rect + tooltip) for a specifc phase
+    })
     .attr('cx',0)
     .attr('transform', function(d, i) {
-      return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
+      return 'translate(' + (2.5*margin + labelWidth) + ',' + (margin+i*barHeight) + ')';
     })
     .attr('height', barHeight)
     .attr('width', function(d){
-      return .5*scale(d);})//对于data.value来说的d，每个元素就是int
+      return .5*scale(d);})
     .attr('fill-opacity', .85);
 
+//---------still buggy-----------
 ageCanvas//for each  bar group, append text of the value
     .insert('g',':first-child')
     .attr('class','agevalues')
@@ -92,28 +109,28 @@ ageCanvas//for each  bar group, append text of the value
     .enter()
     .append('text') //value annotation of each bar
     .attr('class', 'value')
-    .style('position','absolute')
-    .style('z-index',2)
+    .attr('color','black')
     .attr('transform', function(d, i) {
                 return 'translate('+0+',' + i*barHeight+ ')';
     })
     .attr('dx', valueMargin ) //margin right
     .attr('dy', '.35em') //vertical align middle
-    .attr('text-anchor', 'end')
+    // .attr('text-anchor', 'end')
     .style('size','20px')
     .text(function(d){
       return d;
     })
     .attr('x', function(d){
       // var width = this.getBBox().width;
-      return .5*scale(d)-labelWidth;
+      return labelWidth;
       // return Math.max(width + valueMargin, scale(d));
     });
 
 
 
 
-//for eid test
+
+/*-------------for eid test result---------------*/
 var eidCanvas = d3.select('#viz-eid-result')
             .append('svg')
             .attr('width', width)
@@ -122,7 +139,9 @@ var eidCanvas = d3.select('#viz-eid-result')
 
 var w = width*0.8;
 var h = barHeight*data.length+3*margin;
-//Original data
+
+
+//convert data format
 var dataset = [
     [//positive
         { x: 0, y: 5 }, //x for index, y for value
@@ -146,12 +165,21 @@ var dataset = [
         { x: 2, y: 32 },
         { x: 3, y: 35 },
         { x: 4, y: 43 }
+    ],
+    [//rejected
+        { x: 0, y: 4 },
+        { x: 1, y: 7 },
+        { x: 2, y: 6},
+        { x: 3, y: 15 },
+        { x: 4, y: 9 }
     ]
 ];
+
 //Set up stack method
 var stack = d3.layout.stack();
 //Data, stacked
 stack(dataset);
+
 //Set up scales
 var yScale = d3.scale.ordinal()
     .domain(d3.range(dataset[0].length))
@@ -168,18 +196,18 @@ var xScale = d3.scale.linear()
 //Easy colors accessible via a 10-step ordinal scale
 
 // Add a group for each row of data
-var groups = eidCanvas.selectAll("g")
+var eidgroups = eidCanvas.selectAll("g")
     .data(dataset)
     .enter()
     .append("g")
     .attr('transform', function(d, i) {
-          return 'translate(' + (1.5*margin + labelWidth)+ ',' + 1.5*margin + ')';//grouped bards margin
+          return 'translate(' + (2.5*margin + labelWidth)+ ',' + 1.5*margin + ')';//grouped bards margin
         })
     .style("fill", function(d, i) {
         return resultColors(i);
     });
 // Add a rect for each data value
-var rects = groups.selectAll("rect")
+var rects = eidgroups.selectAll("rect")
     .data(function(d) { return d; })
     .enter()
     .append("rect")
@@ -194,7 +222,7 @@ var rects = groups.selectAll("rect")
       return xScale(d.y);
     });
 
-var eidValue = groups.selectAll('text')
+var eidValue = eidgroups.selectAll('text')
     .data(function(d) { return d; })
     .enter()
     .append('text')
@@ -215,7 +243,7 @@ eidCanvas.insert('g',':first-child')
     .append('text')
     .attr('size', 15)
     .attr('transform', function(d, i) {
-                return 'translate(' + 0.4*labelWidth + ',' + (1.5*margin+yScale(i)) + ')';
+                return 'translate(' + (margin) + ',' + (1.5*margin+yScale(i)) + ')';
     })
     .attr('y', barHeight/2)
     .attr('dy', '.35em')
@@ -223,9 +251,44 @@ eidCanvas.insert('g',':first-child')
       return d.entity;
     })
     .attr('labelWidth', labelWidth);
-//eid end
+
+var eidLegend = d3.select('#legend-eid-result')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', h/10);
+
+var eidResultItems = eidLegend.selectAll('g')
+    .data(eidlegend)
+    .enter()
+    .append('g')
+
+eidResultItems
+    .attr('class', function(d,i){
+      return 'result'+i;
+    })
+    .append('text')
+    .attr('class','eidlegend')
+    .text(function(d,i){
+      return d;
+    })
+    .attr('dy','.35em')
+    .attr('transform', function(d, i) {
+          return 'translate(' + (margin + i*2*labelWidth)+ ',' + margin + ')';//grouped bards margin
+        });
+
+eidResultItems    
+    .append('rect')
+    .attr('fill',function(d,i){
+      return resultColors(i);
+    })
+    .attr('height',barHeight)
+    .attr('width',barHeight)
+    .attr('transform', function(d, i) {
+          return 'translate(' + (margin +labelWidth+ i*2*labelWidth)+ ',' + .7*margin + ')';//grouped bards margin
+        });
 
 
+/*-----------turnaround time--------*/
 
 tatCanvas = d3.select('#viz-avg-tat')
             .append('svg')
@@ -283,17 +346,6 @@ bars.attr('class', function(d,i){
     });
 
 
-// bars.attr('class', 'bargroup')//bar = group of (label + rect + tooltip) for a specifc phase
-//     .attr('cx',0)
-//     .attr('transform', function(d, i) {
-//       return 'translate(' + margin + ',' + i*barHeight + ')';//grouped bards margin
-//     });
-
-
-
-
-
-
 function renderbar(){
   var index = 0;
   while (index < data.length){
@@ -341,7 +393,7 @@ function renderbar(){
 
 
 
-//hover等会儿再画
+//hover
 
 // bars.selectAll('rect').
 //   on('mousemove', function(d){ //hover to show tooltips
@@ -408,6 +460,11 @@ tatCanvas.insert('g',':first-child')
     })
     .attr('labelWidth', labelWidth);
 
+
+ageCanvas.insert('g',':first-child')//chart canvas
+    .attr('class', 'axisHorizontal')
+    .attr('transform', 'translate(' + (2.5*margin + labelWidth) + ','+ ageHeight+')')
+    .call(xAxisAge);
 
 renderbar();
 fillColor();
