@@ -1,21 +1,39 @@
+// $when().then(function(){
+
+
+
+
+
+// });
+
+
 /*---------data formart-----------*/
+
+
+var testest = [
+
+[],[],[],[]
+];
+
+testest[0].push(1);
+
+
+console.log(testest);
 
 var tatlabel = ['Total TAT','Collect - Ship','Ship - Receive','Receive - Register','Register - Report','Report - Dispatch']
 
-var eidlegend = ['Positive(Detected)','Indeterminate','Negative(Not Detected)','Rejected']
+var eidlegend = ['Positive','Indeterminate','Negative','Rejected']
 
 //tat data should looks like this format
 var data = [
-{'entity':'LabA','value':[20,3,5,1,4,7]},
-{'entity':'LabB','value':[27,5,8,1,3,10]},
-{'entity':'LabC','value':[25,4,7,2,5,7]},
-{'entity':'LabD','value':[21,3,9,2,8,4]},
-{'entity':'LabE','value':[25,2,8,2,6,8]}
+{'entity':'NHL','value':[20,3,5,1,4,7]},
+{'entity':'PHL','value':[27,5,8,1,3,10]},
+{'entity':'UNION','value':[25,4,7,2,5,7]},
 ]
 
 //age data should looks like this format
 var age = [
-23,45,33,29,44
+23,45,33
 ]
 
 
@@ -26,7 +44,7 @@ var colors = d3.scale.category20();
 //edi test result colors
 var resultColors = d3.scale.ordinal()
   .domain(['negative', 'indeterminate', 'positive','rejected'])
-  .range(['#ff7c6d', '#fff45e', '#98e884','#d7dae0']);
+  .range(['#ff8c8c', '#fff45e', '#98e884','#d7dae0']);
 
 
 // var div = d3.select('#viz-avg-tat').append('div').attr('class', 'toolTip');
@@ -70,7 +88,7 @@ xAxis = d3.svg.axis()
 var scaleAge = d3.scale.linear() //axis scaling
                 .domain([0, Math.max(...age)])
                 .range([0, width - margin*2 - labelWidth]);
-var ageHeight = barHeight*data.length+barPadding*4
+var ageHeight = (barHeight+barPadding)*data.length
 
 var xAxisAge = d3.svg.axis()
           .scale(scaleAge)
@@ -93,14 +111,13 @@ ages.attr('class', function(d,i){
     })
     .attr('cx',0)
     .attr('transform', function(d, i) {
-      return 'translate(' + (2.5*margin + labelWidth) + ',' + (margin+i*barHeight) + ')';
+      return 'translate(' + (2.5*margin + labelWidth) + ',' + (.5*margin+i*1.5*barHeight) + ')';
     })
     .attr('height', barHeight)
     .attr('width', function(d){
       return .5*scale(d);})
     .attr('fill-opacity', .85);
 
-//---------still buggy-----------
 ageCanvas//for each  bar group, append text of the value
     .insert('g',':first-child')
     .attr('class','agevalues')
@@ -109,7 +126,7 @@ ageCanvas//for each  bar group, append text of the value
     .enter()
     .append('text') //value annotation of each bar
     .attr('transform', function(d, i) {
-                return 'translate('+(1.5*margin)+',' + (margin+i*barHeight)+ ')';
+                return 'translate('+(1.5*margin)+',' + (.5*margin+i*1.5*barHeight)+ ')';
     })
     .attr('class', 'result')
     .attr('color','black')
@@ -127,8 +144,42 @@ ageCanvas//for each  bar group, append text of the value
     });
 
 
+var ageLegend = d3.select('#legend-avg-age')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', barHeight*3);
 
+var ageEntityItems = ageLegend.selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
 
+ageEntityItems
+    .attr('class', function(d,i){
+      return 'entity'+i;
+    })
+    .append('text')
+    .text(function(d,i){
+      return d.entity;
+    })
+    .attr('dy','.35em')
+    .attr('transform', function(d, i) {
+          return 'translate(' + (2.4*margin + margin +1.1*barHeight+ i*4*labelWidth)+ ',' + 1.25*margin + ')';//grouped bards margin
+        });
+
+ageEntityItems    
+    .append('rect')
+    .attr('fill',function(d,i){
+      return colors(i);
+    })
+    .attr('class', function(d,i){
+      return 'legend'+i;
+    })
+    .attr('height',barHeight)
+    .attr('width',barHeight)
+    .attr('transform', function(d, i) {
+          return 'translate(' + (2.4*margin  + margin +i*4*labelWidth)+ ',' + margin + ')';//grouped bards margin
+        });
 
 /*-------------for eid test result---------------*/
 var eidCanvas = d3.select('#viz-eid-result')
@@ -137,7 +188,7 @@ var eidCanvas = d3.select('#viz-eid-result')
             .attr('height', barHeight*data.length+4*margin);
 
 
-var w = width*0.8;
+var w = width*.9;
 var h = barHeight*data.length+3*margin;
 
 
@@ -146,32 +197,24 @@ var dataset = [
     [//positive
         { x: 0, y: 5 }, //x for index, y for value
         { x: 1, y: 4 },
-        { x: 2, y: 2 },
-        { x: 3, y: 7 },
-        { x: 4, y: 23 }
+        { x: 2, y: 2 }
     ],
     //ind
     [
         { x: 0, y: 10 },
         { x: 1, y: 12 },
-        { x: 2, y: 19 },
-        { x: 3, y: 23 },
-        { x: 4, y: 17 }
+        { x: 2, y: 19 }
     ],
     //negative
     [
         { x: 0, y: 22 },
         { x: 1, y: 28 },
-        { x: 2, y: 32 },
-        { x: 3, y: 35 },
-        { x: 4, y: 43 }
+        { x: 2, y: 32 }
     ],
     [//rejected
         { x: 0, y: 4 },
         { x: 1, y: 7 },
-        { x: 2, y: 6},
-        { x: 3, y: 15 },
-        { x: 4, y: 9 }
+        { x: 2, y: 6}
     ]
 ];
 
@@ -201,7 +244,7 @@ var eidgroups = eidCanvas.selectAll("g")
     .enter()
     .append("g")
     .attr('transform', function(d, i) {
-          return 'translate(' + (2.5*margin + labelWidth)+ ',' + 1.5*margin + ')';//grouped bards margin
+          return 'translate(' + (2.5*margin + labelWidth)+ ',' + 1.5*barPadding + ')';//grouped bards margin
         })
     .style("fill", function(d, i) {
         return resultColors(i);
@@ -243,7 +286,7 @@ eidCanvas.insert('g',':first-child')
     .append('text')
     .attr('size', 15)
     .attr('transform', function(d, i) {
-                return 'translate(' + (margin) + ',' + (1.5*margin+yScale(i)) + ')';
+                return 'translate(' + (margin) + ',' + (1.5*barPadding+yScale(i)) + ')';
     })
     .attr('y', barHeight/2)
     .attr('dy', '.35em')
@@ -255,7 +298,7 @@ eidCanvas.insert('g',':first-child')
 var eidLegend = d3.select('#legend-eid-result')
             .append('svg')
             .attr('width', width)
-            .attr('height', h/10);
+            .attr('height', h/3);
 
 var eidResultItems = eidLegend.selectAll('g')
     .data(eidlegend)
@@ -273,7 +316,7 @@ eidResultItems
     })
     .attr('dy','.35em')
     .attr('transform', function(d, i) {
-          return 'translate(' + (margin + i*2*labelWidth)+ ',' + margin + ')';//grouped bards margin
+          return 'translate(' + (2.4*margin + margin +1.1*barHeight+ i*4*labelWidth)+ ',' + 1.25*margin + ')';//grouped bards margin
         });
 
 eidResultItems    
@@ -284,7 +327,7 @@ eidResultItems
     .attr('height',barHeight)
     .attr('width',barHeight)
     .attr('transform', function(d, i) {
-          return 'translate(' + (margin +labelWidth+ i*2*labelWidth)+ ',' + .7*margin + ')';//grouped bards margin
+          return 'translate(' + (2.4*margin  + margin +i*4*labelWidth)+ ',' + margin + ')';//grouped bards margin
         });
 
 
@@ -298,7 +341,7 @@ tatCanvas = d3.select('#viz-avg-tat')
 var tatLegend = d3.select('#legend-avg-tat')
             .append('svg')
             .attr('width', width)
-            .attr('height', height/12);
+            .attr('height', barHeight*3);
 
 var tatEntityItems = tatLegend.selectAll('g')
     .data(data)
@@ -315,7 +358,7 @@ tatEntityItems
     })
     .attr('dy','.35em')
     .attr('transform', function(d, i) {
-          return 'translate(' + (margin + i*2*labelWidth)+ ',' + margin + ')';//grouped bards margin
+          return 'translate(' + (2.4*margin + margin +1.1*barHeight+ i*4*labelWidth)+ ',' + 1.25*margin + ')';//grouped bards margin
         });
 
 tatEntityItems    
@@ -329,7 +372,7 @@ tatEntityItems
     .attr('height',barHeight)
     .attr('width',barHeight)
     .attr('transform', function(d, i) {
-          return 'translate(' + (margin +labelWidth+ i*2*labelWidth)+ ',' + .7*margin + ')';//grouped bards margin
+          return 'translate(' + (3.4*margin +i*4*labelWidth)+ ',' + margin + ')';//grouped bards margin
         });
 
 bars = tatCanvas.selectAll('g') //一共3组图，entity有过少就有多少组图，每一组图的margin是往下推一个bar height，每个bar之间的margin是barheight和barmargin各种加起来

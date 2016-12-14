@@ -1,3 +1,12 @@
+var max = function(){
+  if (d3.max(d.value[0]) <= d3.max(d.value[1])){
+    return d3.max(d.value[1]);
+  }else{
+    return d3.max(d.value[0]);
+  }
+
+};
+
 /*specify avg age by lab*/
 -- avgAgeNHL:
 SELECT AVG(([Age]+[ageinweeks]/52)) FROM [dbo].[EIDSummery] WHERE [Lab] = [NHL];
