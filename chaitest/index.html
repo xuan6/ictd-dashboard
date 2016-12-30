@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Summary</title>
+    <link rel="stylesheet" href="/static/scripts/bootstrap.min.css">  <!--bootstrap for styling-->
+    <style>
+
+    #viz-avg-tat {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        /*width: 960px;*/
+        /*height: 700px;*/
+        position: relative;
+    }
+
+    h1{
+        margin-bottom: 5%;
+    }
+
+    svg {
+        width: 100%;
+        height: 100%;
+        position: center;
+    }
+
+    .toolTip {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        position: absolute;
+        display: none;
+        width: auto;
+        height: auto;
+        background: none repeat scroll 0 0 white;
+        border: 0 none;
+        border-radius: 8px 8px 8px 8px;
+        box-shadow: -3px 3px 15px #888888;
+        color: black;
+        font: 12px sans-serif;
+        padding: 5px;
+        text-align: center;
+    }
+
+    text {
+        font: 15px sans-serif;
+        color: black;
+    }
+    text.value {
+        font-size: 120%;
+        fill: white;
+    }
+
+    text.result {
+        font-size: 120%;
+        fill: black;
+        z-index: 2;
+    }
+
+
+    .axisHorizontal path{
+        fill: none;
+    }
+
+    .axisHorizontal .tick line {
+        stroke-width: 1;
+        stroke: rgba(0, 0, 0, 0.2);
+    }
+
+</style>
+
+    <script src="/static/scripts/jquery-2.2.3.js"></script> <!--jQuery-->
+    <script src="/static/scripts/d3.js"></script> 
+
+</head>
+
+<body class="container"> <!-- content -->
+
+
+    <ul class="nav nav-pills">
+        <li role="presentation" class="active"><a href="index.html">Lab Performance</a></li>
+        <li role="presentation"><a href="state.html">State</a></li>
+        <li role="presentation"><a href="track.html">Facility Performance</a></li>
+    </ul>
+
+    <h1>Lab Performance</h1>
+    <main>
+        <div class="panel panel-default">
+            <div class="panel-heading">EID Results</div>
+            <div class = "legend" id ="legend-eid-result"></div>
+            <div class = "canvas" id ="viz-eid-result">
+            <!-- viz goes here -->
+            
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Average Turnaround Time</div>
+            <div class = "legend" id ="legend-avg-tat"></div>
+            <div class = "canvas" id ="viz-avg-tat">
+            <!-- viz goes here -->
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Average Age</div>
+            <div class = "legend" id ="legend-avg-age"></div>
+            <div class = "canvas" id ="viz-avg-age">
+            <!-- viz goes here -->
+            </div>
+        </div>
+    </main>
+
+
+    <script src="/static/scripts/dashboard.js"></script>
+    <script src="/static/scripts/viz.js"></script>
+    
+    <!---
+    <script type="text/javascript">
+    rendertat(labTat)
+    agerender(labAge, 3, lablabel);
+    eidrender(EIDlab, 3);
+    fillColor(labTat);
+    </script>
+        -->
+
+
+    <!--
+    <script src="visualization.js"></script> -->
+    <script type="text/javascript">
+
+
+            rendertat(labTat)
+            //agerender(labAge, 3, lablabel);
+            //eidrender(EIDlab, 3);
+            //fillColor(labTat);
+
+
+
+
+    </script>
+
+</body>
+</html>
